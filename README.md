@@ -9,7 +9,10 @@ Useful code can be found in the folders within this repository. Each folder will
 
 Please ensure that you read the information in the read me as there may be several scripts for different methodolohies. 
 
-Due to the analytical environment NHS Digital uses (databricks) it is possible for python, SQL and markdown code to be used within the same script.
+Due to the analytical environment NHS Digital uses (databricks) it is possible for python, SQL and markdown code to be used within the same script. 
+- SQL code will appear as usual - please note that databricks uses spark SQL rather than T-SQL
+- Python code will have ```--MAGIC``` prior to it and ```%py``` to signal that this 'chunk' of code is written in python
+- Markdown code will have ```--MAGIC``` prior to it and ```%md``` to signal that this 'chunk' of code is written in markdown. Markdown code is minimal and used in databricks to separate code as you would with commenting in SQL.
 
 Code is included for the following pieces of analysis:
 * Ethnicity
