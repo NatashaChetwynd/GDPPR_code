@@ -10,13 +10,13 @@ Ethnic category can be recorded via two methods within GDPPR: an ETHNIC field wi
 
 In GDPPR, patients can only have one recorded ethnic category via the ETHNIC field whereas they may have multiple journal entries with SNOMED codes for ethnicity. Where patients have multiple records within the HES datasets it is possible for a patient to have multiple recorded ethnic categories. Within this MI, a patient's ethnic category is determined using the following methodology:
 
-a) Patients and their recorded ethnic categories from each of the 5 data sources (GDPPR-Journal, GDPPR-Patient, HES-APC, HES-AE, HES-OP) are amalgamated.
+**a)** Patients and their recorded ethnic categories from each of the 5 data sources (GDPPR-Journal, GDPPR-Patient, HES-APC, HES-AE, HES-OP) are amalgamated.
 
-b) Records where the ethnic category is unknown are removed, and the data source providing the most recent ethnic category recording for each patient is selected to de-duplicate patients with multiple recordings.
+**b)** Records where the ethnic category is unknown are removed, and the data source providing the most recent ethnic category recording for each patient is selected to de-duplicate patients with multiple recordings.
 
-c) Where conflicts exist between data sources priority is given in the following order: GDPPR-Journal, GDPPR-Patient, HES-APC, HES-AE, HES-OP. 
+**c)** Where conflicts exist between data sources priority is given in the following order: GDPPR-Journal, GDPPR-Patient, HES-APC, HES-AE, HES-OP. 
 
-d) Where conflicts still exist (i.e. where the highest priority data source gives different ethnic categories on the latest date of attribution) ethnic category is set to null and the patient is not counted as having a known ethnic category.
+**d)** Where conflicts still exist (i.e. where the highest priority data source gives different ethnic categories on the latest date of attribution) ethnic category is set to null and the patient is not counted as having a known ethnic category.
 
-e) Records are removed for patients who have a recorded date of death and/or their postcode is not in England.
+**e)** Records are removed for patients who have a recorded date of death and/or their postcode is not in England.
 
