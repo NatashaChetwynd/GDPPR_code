@@ -9,7 +9,7 @@ Useful code can be found in the folders within this repository. Each folder will
 
 Please ensure that you read the information in the read me as there may be several scripts for different methodolohies. 
 
-Due to the analytical environment NHS Digital uses (databricks) it is possible for python and SQL code to be used within the same script.
+Due to the analytical environment NHS Digital uses (databricks) it is possible for python, SQL and markdown code to be used within the same script.
 
 Code is included for the following pieces of analysis:
 * Ethnicity
