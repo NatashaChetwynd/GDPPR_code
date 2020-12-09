@@ -32,7 +32,7 @@ __*Note: Almost identical methodology is used for GDPPR only, GDPPR + HES, and G
 
 **d)** Records are removed for patients who have a recorded date of death and/or their postcode is not in England.
 
-## NOTES
+# NOTES
 
 GDPPR data = ```gdppr_cur_clear.vw_gdppr```
 
