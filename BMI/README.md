@@ -16,4 +16,14 @@ The code accounts for all six of these methods and produces a BMI category using
 
 # NOTES
 
-Please note that the child centile reference data is avilable from the [Royal College of Paediatric and Child Health](https://www.rcpch.ac.uk/resources/body-mass-index-bmi-chart)  and requires a free license so is not included within this repository. If you are unable to obtain child centile reference data then it is not possible to accurately categorise a child's BMI.
+GDPPR data = ```gdppr_cur_clear.vw_gdppr```
+
+BMI snomed codes reference data = ```ref_data.BMI_CODES```
+
+Height snomed codes reference data = ```ref_data.HEIGHT_CODES```
+
+Weight snomed codes reference data = ```ref_data.WEIGHT_CODES```
+
+Child BMI centiles reference data = ```ref_data.child_bmi_centiles_ordered ```
+
+_Please note that the child centile reference data is avilable from the [Royal College of Paediatric and Child Health](https://www.rcpch.ac.uk/resources/body-mass-index-bmi-chart) and requires a (free) license so is not included within this repository. If you are unable to obtain child centile reference data then it is not possible to accurately categorise a child's BMI._
