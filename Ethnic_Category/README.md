@@ -6,9 +6,11 @@ The HES datasets included within this code are HES Admitted Patient Care (APC), 
 
 Ethnic category can be recorded via two methods within GDPPR: an ETHNIC field within patient information tables, or a SNOMED code for ethnicity within patient journal tables. [SNOMED codes](https://digital.nhs.uk/services/terminology-and-classifications/snomed-ct) are the clinical coding standards used with GP records.
 
+# METHODOLOGY
 
-## Recency Methodology
-### *Note: Almost identical methodology is used for GDPPR only, GDPPR + HES, and GDPPR with HES only when ethnicity is not available in GDPPR, therefore it is only explained once here.*
+## Recency 
+
+__*Note: Almost identical methodology is used for GDPPR only, GDPPR + HES, and GDPPR with HES only when ethnicity is not available in GDPPR, therefore it is only explained once here.*__
 
 **a)** Patients and their recorded ethnic categories from each of the 5 data sources (GDPPR-Journal, GDPPR-Patient, HES-APC, HES-AE, HES-OP) are amalgamated.
 
@@ -20,7 +22,7 @@ Ethnic category can be recorded via two methods within GDPPR: an ETHNIC field wi
 
 **e)** Records are removed for patients who have a recorded date of death and/or their postcode is not in England.
 
-## Modal Methodology
+## Modal
 
 **a)** Patients and their recorded ethnic categories from each of the 5 data sources (GDPPR-Journal, GDPPR-Patient, HES-APC, HES-AE, HES-OP) are amalgamated and records where ethnic category is unknown are removed.
 
