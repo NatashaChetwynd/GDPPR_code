@@ -12,7 +12,11 @@ BMI category can be recorded via six methods within GDPPR, all of which use SNOM
 
 Please note that methods 4, 5 and 6 for children are separated out because their BMI categories are calculated using centiles which are based on their sex, age and BMI (or height and weight calculated BMI).
 
-The code accounts for all six of these methods and produces a BMI category using [NHS BMI groupings](https://www.nhs.uk/live-well/healthy-weight/bmi-calculator/). Please note that cut off points for outliers e.g. cut off low BMI at 10 and high at 55, were determined through initial analyses and were agreed with internal clinicians. Cut off points were deemed to be necessary as we can’t be sure without further analysis whether values outside of the chosen range are DQ issues or just outliers.
+# METHODOLOGY
+
+a) For method 1 a BMI category is assigned using [NHS BMI groupings](https://www.nhs.uk/live-well/healthy-weight/bmi-calculator/). Outliers / potential DQ issues are removed and are not counted as having a determinable BMI category. _Please note that cut off points for outliers e.g. cut off low BMI at 10 and high at 55, were determined through initial analyses and were agreed with internal clinicians.
+
+b) For methods 2 and 4, the BMI category assigned in the  was assumed to be correct unless the 
 
 # NOTES
 
