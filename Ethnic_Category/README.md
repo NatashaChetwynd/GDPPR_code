@@ -1,4 +1,4 @@
-# Background
+# BACKGROUND
 
 Ethnicity is of particular interest in relation to the COVID-19 pandemic therefore NHS Digital have produced an ethnicity asset to understand the quality, coverage, and distribution of ethnic category recording within certain datasets held by NHS Digital. The [2011 Census](https://www.ons.gov.uk/census/2011census), published by the Office for National Statistics (ONS), is the gold standard for ethnicity recording in England and Wales, however as this data is nearly 10 years old and may no longer reflect the ethnic breakdown of the current population NHS Digital have amalgamated ethnic category data from [Hospital Episode Statistics (HES)](https://digital.nhs.uk/data-and-information/data-tools-and-services/data-services/hospital-episode-statistics) and [GPES Data for Pandemic Planning and Research COVID (GDPPR-COVID)](https://digital.nhs.uk/coronavirus/gpes-data-for-pandemic-planning-and-research) to provide a near population (England only) level view of ethnic category.
 
