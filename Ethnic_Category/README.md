@@ -34,13 +34,13 @@ __*Note: Almost identical methodology is used for GDPPR only, GDPPR + HES, and G
 
 # NOTES
 
-GDPPR data = ```gdppr_cur_clear.vw_gdppr```
+GDPPR data = ```gdppr_database.gdppr_table```
 
-Ethnicity reference data = ```dss_corporate.gdppr_ethnicity_mappings```
+Ethnicity reference data = ```reference_database.gdppr_ethnicity_mappings_table```
 
-HES OP data = ```flat_hes_s.hes_op_{year}``` and ```hes.hes_op_{year}```
+HES OP data = ```sensitive_hes_database.hes_op_{year}``` and ```hes_database.hes_op_{year}```
 
-HES AE data = ```flat_hes_s.hes_ae_{year}``` and ```hes.hes_ae_{year}```
+HES AE data = ```sensitive_hes_database.hes_ae_{year}``` and ```hes_database.hes_ae_{year}```
 
-HES APC data = ```flat_hes_s.hes_apc_{year}``` and ```hes.hes_apc_{year}```
+HES APC data = ```sensitive_hes_database.hes_apc_{year}``` and ```hes_database.hes_apc_{year}```
 
