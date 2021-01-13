@@ -20,7 +20,7 @@ b) For methods 2 and 4, the BMI category assigned in the  was assumed to be corr
 
 # NOTES
 
-GDPPR data = ```gdppr_cur_clear.vw_gdppr```
+GDPPR data = ```gdppr_database.gdppr_table```
 
 BMI snomed codes reference data = ```ref_data.BMI_CODES```
 
