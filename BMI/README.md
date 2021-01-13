@@ -14,7 +14,7 @@ Please note that methods 4, 5 and 6 for children are separated out because their
 
 # METHODOLOGY
 
-a) For method 1 a BMI category is assigned using [NHS BMI groupings](https://www.nhs.uk/live-well/healthy-weight/bmi-calculator/). Outliers / potential DQ issues are removed and are not counted as having a determinable BMI category. _Please note that cut off points for outliers e.g. cut off low BMI at 10 and high at 55, were determined through initial analyses and were agreed with internal clinicians.
+a) For method 1 a BMI category is assigned using [NHS BMI groupings](https://www.nhs.uk/live-well/healthy-weight/bmi-calculator/). Outliers / potential DQ issues are removed and are not counted as having a determinable BMI category. _Please note that cut off points for outliers e.g. cut off low BMI at 10 and high at 55, were determined through initial analyses and were agreed with internal clinicians._
 
 b) For methods 2 and 4, the BMI category assigned in the  was assumed to be correct unless the 
 
