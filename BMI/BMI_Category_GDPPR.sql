@@ -9,14 +9,14 @@ CREATE OR REPLACE TEMPORARY VIEW BMI_JOURNALS_2 AS
 SELECT a.*
 , b.ConceptId_Description
 , b.BMI_CAT
-FROM gdppr_cur_clear.vw_gdppr AS a
+FROM gdppr_database.gdppr_table AS a
 LEFT JOIN ref_data.BMI_CODES AS b
 ON a.CODE = b.ConceptID
 WHERE a.CODE IN (SELECT DISTINCT ConceptID FROM ref_data.BMI_CODES)
 
 -- COMMAND ----------
 
--- add my categories on to BMI journals
+-- add categories on to BMI journals
 -- add age at time of journal date (allows removal of under 18's)
 CREATE OR REPLACE TEMPORARY VIEW BMI_JOURNALS_CAT_2 AS
 SELECT *
@@ -47,9 +47,8 @@ SELECT *
             WHEN BMI_CAT = 'UNKNOWN' THEN 'INDETERMINABLE'
             WHEN BMI_CAT = 'CHILD' THEN 'CHILD'
             ELSE 'INDETERMINABLE'
-            END AS BMI_CATEGORISED_TASHA
+            END AS BMI_CATEGORISED_INITIAL
 , (DATEDIFF(DATE, DATE_OF_BIRTH))/365.25 AS AGE_AT_TIME_OF_JOURNAL
---, YEAR(DATE) - YEAR_OF_BIRTH AS AGE_AT_TIME_OF_JOURNAL
 FROM BMI_JOURNALS_2
 
 -- COMMAND ----------
@@ -72,7 +71,7 @@ AND AGE_AT_TIME_OF_JOURNAL >= 18
 CREATE OR REPLACE TEMPORARY VIEW HEIGHT_JOURNALS_2 AS
 SELECT a.*
 , b.ConceptId_Description
-FROM gdppr_cur_clear.vw_gdppr AS a
+FROM gdppr_database.gdppr_table AS a
 LEFT JOIN ref_data.HEIGHT_CODES AS b
 ON a.CODE = b.ConceptID
 WHERE a.CODE IN (SELECT DISTINCT ConceptID FROM ref_data.HEIGHT_CODES)
@@ -83,20 +82,19 @@ WHERE a.CODE IN (SELECT DISTINCT ConceptID FROM ref_data.HEIGHT_CODES)
 CREATE OR REPLACE TEMPORARY VIEW WEIGHT_JOURNALS_2 AS
 SELECT a.*
 , b.ConceptId_Description
-FROM gdppr_cur_clear.vw_gdppr AS a
+FROM gdppr_database.gdppr_table AS a
 LEFT JOIN ref_data.WEIGHT_CODES AS b
 ON a.CODE = b.ConceptID
 WHERE a.CODE IN (SELECT DISTINCT ConceptID FROM ref_data.WEIGHT_CODES)
 
 -- COMMAND ----------
 
--- join height and weight journals together for journals which were recorded on the same date
+-- join height and weight journals together for journals for the same patient which were recorded on the same date
 -- join on several other patient factors
 -- calculate age at time of journal to allow removal of under 18s
 CREATE OR REPLACE TEMPORARY VIEW HW_JOINT_2 AS
 SELECT a.*
 , (DATEDIFF(a.DATE, a.DATE_OF_BIRTH))/365.25 AS AGE_AT_TIME_OF_JOURNAL
---, (YEAR(a.DATE) - a.YEAR_OF_BIRTH) AS AGE_AT_TIME_OF_JOURNAL
 , CASE WHEN a.VALUE1_CONDITION >=0 AND a.VALUE1_CONDITION <=3 THEN a.VALUE1_CONDITION * 100
 ELSE a.VALUE1_CONDITION END AS H_VALUE
 , b.RECORD_DATE AS W_RECORD_DATE
@@ -187,7 +185,6 @@ SELECT *
             WHEN BMI_CAT = 'CHILD' THEN 'CHILD'
             ELSE 'INDETERMINABLE'
             END AS BMI_CATEGORISED_INITIAL
---, DATEDIFF(DATE, DATE_OF_BIRTH)/365.25 AS AGE_AT_TIME_OF_JOURNAL
 FROM CHILD_BMI_JOURNALS
 
 -- COMMAND ----------
@@ -509,7 +506,7 @@ SELECT DATE_OF_BIRTH
 ,W_LINKS
 ,BMI	
 ,null as BMI_CAT	
-,BMI_CATEGORISED_INITIAL
+,BMI_CATEGORISED_INITIAL 
 ,"HW (ADULT)" AS TABLE_ORIGIN
 FROM HEIGHT_WEIGHT_NO_UNKNOWN_2
 
@@ -630,6 +627,12 @@ FROM BMI_CATS_PER_PATIENT_2
 WHERE COUNT_CATEGORIES = 1
 
 -- COMMAND ----------
+
+------------------------------------------------------------------------
+-----------------------------------------------------------------------
+----------- THIS IS THE FINAL TABLE ------------------------------------
+------------------------------------------------------------------------
+-----------------------------------------------------------------------
 
 -- create table with patients with more than one BMI cat removed
 CREATE OR REPLACE TEMPORARY VIEW RECENT_BMI_CAT_DUPS_REMOVED_2 AS

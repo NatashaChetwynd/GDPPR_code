@@ -16,10 +16,10 @@
 
 -- MAGIC %py
 -- MAGIC # create spark df of dataset
--- MAGIC data = spark.table('gdppr_cur_clear.vw_gdppr')
+-- MAGIC data = spark.table('gdppr_database.gdppr_table')
 -- MAGIC 
 -- MAGIC # create spark df of snomed ethnicity reference data
--- MAGIC ethnicity_ref_data = spark.table('dss_corporate.gdppr_ethnicity_mappings')
+-- MAGIC ethnicity_ref_data = spark.table('reference_database.gdppr_ethnicity_mappings_table')
 -- MAGIC 
 -- MAGIC # join nhs data dictionary ethnic groups onto ethnicity snomed journals
 -- MAGIC data_join = data.join(ethnicity_ref_data, data.CODE == ethnicity_ref_data.ConceptId,how='left') 
@@ -110,7 +110,7 @@ GROUP BY NHS_NUMBER
 -- MAGIC from pyspark.sql.functions import expr, col, lit, concat, regexp_replace, upper, split, regexp_extract
 -- MAGIC 
 -- MAGIC # select years
--- MAGIC years = [row.year for row in spark.sql("SHOW TABLES IN FLAT_HES_S").filter(col("isTemporary")==False).withColumn("yeary", split(col("tableName"), '_')[2]).withColumn("year", regexp_extract(col("yeary"),"([0-2][0-9]{3})", 1)).select("year").filter(col("year") != '').distinct().sort(col("year").desc()).limit(6).collect()]
+-- MAGIC years = [row.year for row in spark.sql("SHOW TABLES IN sensitive_hes").filter(col("isTemporary")==False).withColumn("yeary", split(col("tableName"), '_')[2]).withColumn("year", regexp_extract(col("yeary"),"([0-2][0-9]{3})", 1)).select("year").filter(col("year") != '').distinct().sort(col("year").desc()).limit(6).collect()]
 -- MAGIC 
 -- MAGIC # print years for visual check
 -- MAGIC print(years)
@@ -126,7 +126,7 @@ GROUP BY NHS_NUMBER
 -- MAGIC # create 5 years of HES OP ethnicity records
 -- MAGIC stmt = []
 -- MAGIC for year in years:
--- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO, b.APPTDATE, b.ETHNOS FROM flat_hes_s.hes_op_{year} AS a INNER JOIN hes.hes_op_{year} AS b ON a.ATTENDKEY = b.ATTENDKEY WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
+-- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO, b.APPTDATE, b.ETHNOS FROM sensitive_hes.hes_op_{year} AS a INNER JOIN hes.hes_op_{year} AS b ON a.ATTENDKEY = b.ATTENDKEY WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
 -- MAGIC 
 -- MAGIC # create temp table
 -- MAGIC spark.sql('CREATE OR REPLACE TEMPORARY VIEW OP_5_YEAR AS ' + ' UNION '.join(stmt))
@@ -144,7 +144,7 @@ GROUP BY NHS_NUMBER
 -- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO
 -- MAGIC , b.ARRIVALDATE
 -- MAGIC , b.ETHNOS
--- MAGIC FROM flat_hes_s.hes_ae_{year} AS a
+-- MAGIC FROM sensitive_hes.hes_ae_{year} AS a
 -- MAGIC LEFT JOIN  hes.hes_ae_{year} AS b 
 -- MAGIC ON a.AEKEY = b.AEKEY
 -- MAGIC WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
@@ -164,7 +164,7 @@ GROUP BY NHS_NUMBER
 -- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO
 -- MAGIC , b.EPIEND
 -- MAGIC , b.ETHNOS
--- MAGIC FROM flat_hes_s.hes_apc_{year} AS a
+-- MAGIC FROM sensitive_hes.hes_apc_{year} AS a
 -- MAGIC LEFT JOIN  hes.hes_apc_{year} AS b 
 -- MAGIC ON a.EPIKEY = b.EPIKEY
 -- MAGIC WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
@@ -185,7 +185,7 @@ GROUP BY NHS_NUMBER
 -- COMMAND ----------
 
 -- append gdppr and hes ethnicity records together
-CREATE TABLE IF NOT EXISTS natasha_chetwynd1_100049.ALL_SOURCES_ETHNICITY_JOINED AS
+CREATE OR REPLACE TEMPORARY VIEW ALL_SOURCES_ETHNICITY_JOINED AS
 
 SELECT NHS_NUMBER
 , ETHNICITY
@@ -228,16 +228,18 @@ AND ETHNOS IS NOT NULL
 
 -- COMMAND ----------
 
+-- count journals per ethnicity per patient
 CREATE OR REPLACE TEMPORARY VIEW JOURNALS_PER_ETHNICITY AS
 SELECT NHS_NUMBER
 , ETHNICITY
 , COUNT(*) AS COUNT
-FROM natasha_chetwynd1_100049.ALL_SOURCES_ETHNICITY_JOINED
+FROM ALL_SOURCES_ETHNICITY_JOINED
 GROUP BY NHS_NUMBER
 , ETHNICITY
 
 -- COMMAND ----------
 
+-- get max count per patient
 CREATE OR REPLACE TEMPORARY VIEW MAX_COUNT_ETHNICITY AS
 SELECT NHS_NUMBER
 , MAX(COUNT) AS MAX_COUNT
@@ -246,6 +248,7 @@ GROUP BY NHS_NUMBER
 
 -- COMMAND ----------
 
+-- get the modal ethnicity per patient (may still include duplicates for those with more than one modal ethnic cat)
 CREATE OR REPLACE TEMPORARY VIEW MODAL_ETHNICITY AS
 SELECT a.* 
 FROM JOURNALS_PER_ETHNICITY AS a
@@ -269,12 +272,13 @@ GROUP BY NHS_NUMBER
 
 -- COMMAND ----------
 
--- select only NHS numbers with one modal ethnicity i.e. remove patients who have more than one
+/* ##########################################################
+###########  THIS IS THE FINAL TABLE  #######################
+############################################################# */
 
+-- select only NHS numbers with one modal ethnicity i.e. remove patients who have more than one
 CREATE OR REPLACE TEMPORARY VIEW ETHNICITY_ASSET_MODAL AS
 SELECT NHS_NUMBER
 , ETHNICITY AS ETHNIC_CATEGORY_CODE
 FROM MODAL_ETHNICITY
 WHERE NHS_NUMBER IN (SELECT NHS_NUMBER FROM DUPLICATE_ETHNICITY_NHSNUM_MODAL WHERE COUNT_ETHNICITIES = 1)
-
--- COMMAND ----------

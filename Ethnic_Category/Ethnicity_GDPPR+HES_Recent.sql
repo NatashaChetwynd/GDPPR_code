@@ -16,10 +16,10 @@
 
 -- MAGIC %py
 -- MAGIC # create spark df of dataset
--- MAGIC data = spark.table('gdppr_cur_clear.vw_gdppr')
+-- MAGIC data = spark.table('gdppr_database.gdppr_table')
 -- MAGIC 
 -- MAGIC # create spark df of snomed ethnicity reference data
--- MAGIC ethnicity_ref_data = spark.table('dss_corporate.gdppr_ethnicity_mappings')
+-- MAGIC ethnicity_ref_data = spark.table('reference_database.gdppr_ethnicity_mappings_table')
 -- MAGIC 
 -- MAGIC # join nhs data dictionary ethnic groups onto ethnicity snomed journals
 -- MAGIC data_join = data.join(ethnicity_ref_data, data.CODE == ethnicity_ref_data.ConceptId,how='left') 
@@ -159,7 +159,7 @@ AND a.REPORTING_PERIOD_END_DATE = b.RECENT_ETHNICITY_DATE
 -- MAGIC from pyspark.sql.functions import expr, col, lit, concat, regexp_replace, upper, split, regexp_extract
 -- MAGIC 
 -- MAGIC # select years
--- MAGIC years = [row.year for row in spark.sql("SHOW TABLES IN FLAT_HES_S").filter(col("isTemporary")==False).withColumn("yeary", split(col("tableName"), '_')[2]).withColumn("year", regexp_extract(col("yeary"),"([0-2][0-9]{3})", 1)).select("year").filter(col("year") != '').distinct().sort(col("year").desc()).limit(6).collect()]
+-- MAGIC years = [row.year for row in spark.sql("SHOW TABLES IN sensitive_hes").filter(col("isTemporary")==False).withColumn("yeary", split(col("tableName"), '_')[2]).withColumn("year", regexp_extract(col("yeary"),"([0-2][0-9]{3})", 1)).select("year").filter(col("year") != '').distinct().sort(col("year").desc()).limit(6).collect()]
 -- MAGIC 
 -- MAGIC # print years for visual check
 -- MAGIC print(years)
@@ -175,7 +175,7 @@ AND a.REPORTING_PERIOD_END_DATE = b.RECENT_ETHNICITY_DATE
 -- MAGIC # create 5 years of HES OP ethnicity records
 -- MAGIC stmt = []
 -- MAGIC for year in years:
--- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO, b.APPTDATE, b.ETHNOS FROM flat_hes_s.hes_op_{year} AS a INNER JOIN hes.hes_op_{year} AS b ON a.ATTENDKEY = b.ATTENDKEY WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
+-- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO, b.APPTDATE, b.ETHNOS FROM sensitive_hes.hes_op_{year} AS a INNER JOIN hes.hes_op_{year} AS b ON a.ATTENDKEY = b.ATTENDKEY WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
 -- MAGIC 
 -- MAGIC # create temp table
 -- MAGIC spark.sql('CREATE OR REPLACE TEMPORARY VIEW OP_5_YEAR AS ' + ' UNION '.join(stmt))
@@ -241,7 +241,7 @@ AND a.APPTDATE = b.RECENT_ETHNICITY_DATE
 -- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO
 -- MAGIC , b.ARRIVALDATE
 -- MAGIC , b.ETHNOS
--- MAGIC FROM flat_hes_s.hes_ae_{year} AS a
+-- MAGIC FROM sensitive_hes.hes_ae_{year} AS a
 -- MAGIC LEFT JOIN  hes.hes_ae_{year} AS b 
 -- MAGIC ON a.AEKEY = b.AEKEY
 -- MAGIC WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
@@ -310,7 +310,7 @@ AND a.ARRIVALDATE = b.RECENT_ETHNICITY_DATE
 -- MAGIC   stmt.append(f"""SELECT a.NEWNHSNO
 -- MAGIC , b.EPIEND
 -- MAGIC , b.ETHNOS
--- MAGIC FROM flat_hes_s.hes_apc_{year} AS a
+-- MAGIC FROM sensitive_hes.hes_apc_{year} AS a
 -- MAGIC LEFT JOIN  hes.hes_apc_{year} AS b 
 -- MAGIC ON a.EPIKEY = b.EPIKEY
 -- MAGIC WHERE b.CR_GP_PRACTICE NOT IN ('Y','Q99')""")
@@ -507,7 +507,7 @@ WHERE NHS_NUMBER IN (SELECT NHS_NUMBER FROM DUPLICATE_ETHNICITY_NHSNUM WHERE COU
 -- create list of gdppr patients who are not deceased (gdppr does not include opt outs so they will be removed where they came in from HES)
 CREATE OR REPLACE TEMPORARY VIEW ALIVE_PATIENTS AS
 SELECT DISTINCT NHS_NUMBER
-FROM gdppr_cur_clear.vw_gdppr
+FROM gdppr_database.gdppr_table
 WHERE DATE_OF_DEATH IS null
 
 -- COMMAND ----------

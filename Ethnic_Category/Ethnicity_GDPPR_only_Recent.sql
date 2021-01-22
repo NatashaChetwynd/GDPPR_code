@@ -16,10 +16,10 @@
 
 -- MAGIC %py
 -- MAGIC # create spark df of dataset
--- MAGIC data = spark.table('gdppr_cur_clear.vw_gdppr')
+-- MAGIC data = spark.table('gdppr_database.gdppr_table')
 -- MAGIC 
 -- MAGIC # create spark df of snomed ethnicity reference data
--- MAGIC ethnicity_ref_data = spark.table('dss_corporate.gdppr_ethnicity_mappings')
+-- MAGIC ethnicity_ref_data = spark.table('reference_database.gdppr_ethnicity_mappings_table')
 -- MAGIC 
 -- MAGIC # join nhs data dictionary ethnic groups onto ethnicity snomed journals
 -- MAGIC data_join = data.join(ethnicity_ref_data, data.CODE == ethnicity_ref_data.ConceptId,how='left') 
@@ -258,7 +258,7 @@ WHERE NHS_NUMBER IN (SELECT NHS_NUMBER FROM GDPPR_DUPLICATE_ETHNICITY_NHSNUM WHE
 -- create list of gdppr patients who are not deceased (gdppr does not include opt outs)
 CREATE OR REPLACE TEMPORARY VIEW GDPPR_ALIVE_PATIENTS AS
 SELECT DISTINCT NHS_NUMBER
-FROM gdppr_cur_clear.vw_gdppr
+FROM gdppr_database.gdppr_table
 WHERE DATE_OF_DEATH IS null
 
 -- COMMAND ----------
