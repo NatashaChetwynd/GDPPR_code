@@ -7,7 +7,7 @@
 
 Useful code can be found in the folders within this repository. Each folder will include a README.md file which explains the basic methodology behind the analysis/code, a code script, and reference data (where necessary).
 
-Please ensure that you read the information in the read me as there may be several scripts for different methodolohies. 
+Please ensure that you read the information in the read me as there may be several scripts for different methodologies. 
 
 Due to the analytical environment NHS Digital uses (databricks) it is possible for python, SQL and markdown code to be used within the same script. 
 - SQL code will appear as usual - please note that databricks uses spark SQL rather than T-SQL
